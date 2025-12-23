@@ -45,19 +45,19 @@
             height: 100%;
         }
 
-        /* Centered title + subtitle */
+        /* Title + subtitle back to left */
         .page-title {
             font-size: 28px;
             font-weight: 600;
             margin-bottom: 4px;
-            text-align: center;
+            text-align: left;
         }
 
         .page-subtitle {
             font-size: 14px;
             color: var(--text-muted);
             margin-bottom: 16px;
-            text-align: center;
+            text-align: left;
         }
 
         .app-container {
@@ -67,11 +67,11 @@
             min-height: 0;
         }
 
-        /* Rounded rectangles reduced ~30% (13px -> 9px) */
+        /* Panel rounding kept as before, shadows reduced by ~50% */
         .panel {
             border-radius: 9px;
             border: 1px solid var(--border-subtle);
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+            box-shadow: 0 9px 22px rgba(15, 23, 42, 0.45);
             padding: 18px 20px 20px 20px;
         }
 
@@ -136,7 +136,7 @@
             color: var(--text-main);
             background: #020617;
             border: 1px solid #1e293b;
-            border-radius: 14px; /* also reduced ~30% from 20px */
+            border-radius: 14px;
             outline: none;
             transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
         }
@@ -149,34 +149,36 @@
 
         button {
             margin-top: 6px;
-            padding: 9px 18px;
+            padding: 9px 14px; /* reduced length */
             font-size: 13px;
             font-weight: 500;
             color: #e5e7eb;
             background: linear-gradient(135deg, var(--accent), var(--accent-soft));
             border: none;
-            border-radius: 14px; /* reduced rounding */
+            border-radius: 14px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 5px 12px rgba(37, 99, 235, 0.22);
+            gap: 6px;
+            box-shadow: 0 2.5px 6px rgba(37, 99, 235, 0.11); /* ~50% of previous */
             transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
         }
 
         button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 7px 16px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 3.5px 8px rgba(37, 99, 235, 0.15);
             filter: brightness(1.04);
         }
 
         button:active {
             transform: translateY(0);
-            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+            box-shadow: 0 2px 5px rgba(37, 99, 235, 0.12);
         }
 
+        /* Plus icon forced to white */
         button span.icon {
             font-size: 14px;
+            color: #ffffff;
         }
 
         #result {
@@ -196,7 +198,7 @@
             color: #111827;
             border-radius: 9px;
             border: 1px solid #e5e7eb;
-            box-shadow: 0 14px 40px rgba(15, 23, 42, 0.35);
+            box-shadow: 0 7px 20px rgba(15, 23, 42, 0.18); /* reduced shadow */
             padding: 14px 16px 16px 16px;
             flex: 1;
             min-height: 0;
@@ -214,10 +216,11 @@
             gap: 16px;
             padding: 10px 14px;
             border-radius: 14px;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.75); /* slightly less intense */
             border: 1px solid var(--border-subtle);
             font-size: 12px;
             color: var(--text-muted);
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25); /* reduce legend shadow */
         }
 
         .legend-item {
@@ -234,8 +237,8 @@
 
         .swatch-a { background: #3b82f6; }
         .swatch-b { background: #f97373; }
-        .swatch-r { background: #a855f7; } /* purple for resultant */
-        
+        .swatch-r { background: #a855f7; }
+
         @media (max-width: 900px) {
             .app-container {
                 flex-direction: column;
@@ -372,7 +375,6 @@
                 marker: { size: 6, color: "#f97373" }
             };
 
-            /* Resultant in purple */
             const traceR = {
                 x: [0, sum_x],
                 y: [0, sum_y],
@@ -386,7 +388,6 @@
                 paper_bgcolor: "#ffffff",
                 plot_bgcolor: "#ffffff",
                 margin: { l: 40, r: 10, t: 20, b: 40 },
-                /* Axis labels changed from x/y to Vector A/Vector B */
                 xaxis: {
                     title: "Vector A",
                     zeroline: true,
@@ -426,4 +427,3 @@
     </script>
 </body>
 </html>
-
