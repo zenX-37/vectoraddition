@@ -107,7 +107,7 @@
 
         .vector-column {
             display: flex;
-            flex-direction: column;
+            flex-direction: UPDATED: column;
             gap: 6px;
         }
 
@@ -129,9 +129,10 @@
             color: var(--text-muted);
         }
 
+        /* UPDATED: All inputs same length (100px), aligned perfectly */
         input {
             padding: 6px 8px;
-            width: 80px;
+            width: 100px;  /* Fixed width for all inputs */
             font-size: 13px;
             color: var(--text-main);
             background: #020617;
@@ -146,9 +147,10 @@
             box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
         }
 
+        /* UPDATED: Button text perfectly centered */
         button {
             margin-top: 6px;
-            padding: 9px 14px;
+            padding: 9px 20px;  /* Increased horizontal padding */
             font-size: 13px;
             font-weight: 500;
             color: #e5e7eb;
@@ -156,9 +158,11 @@
             border: none;
             border-radius: 14px;
             cursor: pointer;
-            display: inline-flex;
+            display: flex;  /* Changed to flex for perfect centering */
             align-items: center;
+            justify-content: center;  /* Horizontal centering */
             gap: 6px;
+            width: 100%;  /* Full width to align with inputs */
             box-shadow: 0 2.5px 6px rgba(37, 99, 235, 0.11);
             transition: all 0.12s ease;
         }
@@ -208,7 +212,6 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        /* UPDATED: Purple for R components (matches graph), others unchanged */
         .result-components { border-color: #a855f7; color: var(--text-main); }
         .result-magnitude { border-color: #10b981; color: var(--text-main); }
         .result-angle { border-color: #f59e0b; color: var(--text-main); }
@@ -440,7 +443,6 @@
                 showlegend: false, hovertemplate: ""
             };
 
-            // UPDATED: Orange angle arc (matches result border)
             const arcRadius = Math.min(3.5, axisMax * 0.18);
             const numPoints = 50;
             const arcX = [];
@@ -456,7 +458,7 @@
                 y: arcY,
                 mode: "lines",
                 line: { 
-                    color: "#f59e0b",  // Orange (matches result-angle border)
+                    color: "#f59e0b",
                     width: 3.5,
                     shape: "spline"
                 },
