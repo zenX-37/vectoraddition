@@ -202,7 +202,6 @@
             margin-top: 4px;
         }
 
-        /* NEW: Resultant vector section */
         .resultant-section {
             margin-top: 16px;
             padding-top: 10px;
@@ -340,19 +339,23 @@
                     <span>Add vectors</span>
                 </button>
 
-                <!-- EXISTING numeric summary (optional keep) -->
+                <!-- Existing quick summary -->
                 <div id="result"></div>
                 <div class="result-sub" id="result-sub"></div>
 
-                <!-- NEW: Resultant vector section -->
+                <!-- Resultant vector section with magnitude + angle -->
                 <div class="resultant-section">
                     <div class="resultant-title">Resultant vector</div>
                     <div class="resultant-formula">
-                        Given A = (A<sub>x</sub>, A<sub>y</sub>) and B = (B<sub>x</sub>, B<sub>y</sub>):<br>
-                        R = A + B = (A<sub>x</sub> + B<sub>x</sub>, A<sub>y</sub> + B<sub>y</sub>)
+                        Component form:<br>
+                        R = A + B = (A<sub>x</sub> + B<sub>x</sub>, A<sub>y</sub> + B<sub>y</sub>)<br><br>
+                        Magnitude (Pythagorean theorem):<br>
+                        |R| = √[(A<sub>x</sub> + B<sub>x</sub>)² + (A<sub>y</sub> + B<sub>y</sub>)²]<br><br>
+                        Direction (angle from positive x-axis):<br>
+                        θ = atan2(A<sub>y</sub> + B<sub>y</sub>, A<sub>x</sub> + B<sub>x</sub>) in degrees
                     </div>
                     <div class="resultant-value" id="resultant-display">
-                        R = (0.00, 0.00)
+                        R = (0.00, 0.00), |R| = 0.00, θ = 0.00°
                     </div>
                 </div>
             </div>
@@ -393,7 +396,13 @@
 
             const magA = Math.sqrt(a_x * a_x + a_y * a_y);
             const magB = Math.sqrt(b_x * b_x + b_y * b_y);
+
+            // Magnitude of resultant using Pythagorean theorem
             const magR = Math.sqrt(sum_x * sum_x + sum_y * sum_y);
+
+            // Angle of resultant in degrees (atan2 handles quadrants)
+            const thetaRad = Math.atan2(sum_y, sum_x);
+            const thetaDeg = thetaRad * 180 / Math.PI;
 
             document.getElementById('result').innerHTML =
                 `R = A + B = (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)})`;
@@ -401,9 +410,8 @@
             document.getElementById('result-sub').innerHTML =
                 `|A| = ${magA.toFixed(2)}, |B| = ${magB.toFixed(2)}, |R| = ${magR.toFixed(2)}`;
 
-            // NEW: show resultant in dedicated section
             document.getElementById('resultant-display').textContent =
-                `R = (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)})`;
+                `R = (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)}), |R| = ${magR.toFixed(2)}, θ = ${thetaDeg.toFixed(2)}°`;
 
             drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y);
         }
@@ -481,7 +489,6 @@
             Plotly.newPlot("graph", [traceA, traceB, traceR], layout, config);
         }
 
-        // Initial draw and initial resultant text
         addVectors();
     </script>
 </body>
