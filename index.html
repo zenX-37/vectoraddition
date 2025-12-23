@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vector Addition Calculator</title>
-    <!-- Plotly CDN for interactive graph -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
         :root {
@@ -17,13 +16,9 @@
             --text-muted: #9ca3af;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
-        html, body {
-            height: 100%;
-        }
+        html, body { height: 100%; }
 
         body {
             margin: 0;
@@ -108,13 +103,7 @@
             margin-bottom: 12px;
         }
 
-        .inputs-block {
-            flex: 1;
-        }
-
-        .inputs-row {
-            margin-bottom: 10px;
-        }
+        .inputs-block { flex: 1; }
 
         .vector-column {
             display: flex;
@@ -149,13 +138,12 @@
             border: 1px solid #1e293b;
             border-radius: 14px;
             outline: none;
-            transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
         }
 
         input:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
-            background: #020617;
         }
 
         button {
@@ -172,18 +160,12 @@
             align-items: center;
             gap: 6px;
             box-shadow: 0 2.5px 6px rgba(37, 99, 235, 0.11);
-            transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+            transition: all 0.12s ease;
         }
 
         button:hover {
             transform: translateY(-1px);
             box-shadow: 0 3.5px 8px rgba(37, 99, 235, 0.15);
-            filter: brightness(1.04);
-        }
-
-        button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(37, 99, 235, 0.12);
         }
 
         button span.icon {
@@ -223,20 +205,16 @@
 
         .graph-panel {
             background: #ffffff;
-            color: #111827;
             border-radius: 9px;
             border: 1px solid #e5e7eb;
             box-shadow: 0 7px 20px rgba(15, 23, 42, 0.18);
-            padding: 14px 16px 16px 16px;
+            padding: 14px 16px;
             flex: 1;
             min-height: 0;
             display: flex;
         }
 
-        #graph {
-            width: 100%;
-            height: 100%;
-        }
+        #graph { width: 100%; height: 100%; }
 
         .legend-bar {
             display: flex;
@@ -251,11 +229,7 @@
             box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
 
         .legend-swatch {
             width: 16px;
@@ -268,15 +242,9 @@
         .swatch-r { background: #a855f7; }
 
         @media (max-width: 900px) {
-            .app-container {
-                flex-direction: column;
-            }
-            .left-panel {
-                max-width: 100%;
-            }
-            .vectors-row {
-                flex-direction: column;
-            }
+            .app-container { flex-direction: column; }
+            .left-panel { max-width: 100%; }
+            .vectors-row { flex-direction: column; }
         }
     </style>
 </head>
@@ -288,7 +256,6 @@
         </div>
 
         <div class="app-container">
-            <!-- LEFT PANEL -->
             <div class="panel left-panel">
                 <div class="panel-header">Vector inputs</div>
                 <div class="panel-description">
@@ -371,93 +338,73 @@
 
     <script>
         function addVectors() {
-            const a_x = parseFloat(document.getElementById('a_x').value);
-            const a_y = parseFloat(document.getElementById('a_y').value);
-            const b_x = parseFloat(document.getElementById('b_x').value);
-            const b_y = parseFloat(document.getElementById('b_y').value);
+            const a_x = parseFloat(document.getElementById('a_x').value) || 0;
+            const a_y = parseFloat(document.getElementById('a_y').value) || 0;
+            const b_x = parseFloat(document.getElementById('b_x').value) || 0;
+            const b_y = parseFloat(document.getElementById('b_y').value) || 0;
 
             const sum_x = a_x + b_x;
             const sum_y = a_y + b_y;
-
             const magR = Math.sqrt(sum_x * sum_x + sum_y * sum_y);
             const thetaRad = Math.atan2(sum_y, sum_x);
-            const thetaDeg = thetaRad * 180 / Math.PI;
+            const thetaDeg = (thetaRad * 180 / Math.PI + 360) % 360; // Normalize to 0-360
 
             document.getElementById('resultant-display').textContent =
-                `R = (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)}), |R| = ${magR.toFixed(2)}, θ = ${thetaDeg.toFixed(2)}°`;
+                `R = (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)}), |R| = ${magR.toFixed(2)}, θ = ${thetaDeg.toFixed(1)}°`;
 
-            drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y, thetaDeg);
+            // Pass ALL values needed
+            drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y, thetaDeg, thetaRad);
         }
 
-        function drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y, thetaDeg) {
+        function drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y, thetaDeg, thetaRad) {
             const values = [0, a_x, a_y, b_x, b_y, sum_x, sum_y];
-            const maxAbs = Math.max(...values.map(v => Math.abs(v)), 5);
+            const maxAbs = Math.max(...values.map(Math.abs), 5);
             const margin = 1;
             const axisMax = maxAbs + margin;
             const axisMin = -axisMax;
 
-            // Main Vector A
             const traceA = {
-                x: [0, a_x],
-                y: [0, a_y],
+                x: [0, a_x], y: [0, a_y],
                 mode: "lines+markers",
-                name: "Vector A",
                 line: { color: "#3b82f6", width: 4 },
-                marker: { size: 6, color: "#3b82f6" }
+                marker: { size: 6, color: "#3b82f6" },
+                hovertemplate: "A = (%{x:.1f}, %{y:.1f})<extra></extra>"
             };
 
-            // Main Vector B
             const traceB = {
-                x: [0, b_x],
-                y: [0, b_y],
+                x: [0, b_x], y: [0, b_y],
                 mode: "lines+markers",
-                name: "Vector B",
                 line: { color: "#f97373", width: 4 },
-                marker: { size: 6, color: "#f97373" }
+                marker: { size: 6, color: "#f97373" },
+                hovertemplate: "B = (%{x:.1f}, %{y:.1f})<extra></extra>"
             };
 
-            // Main Resultant R with hover
             const traceR = {
-                x: [0, sum_x],
-                y: [0, sum_y],
+                x: [0, sum_x], y: [0, sum_y],
                 mode: "lines+markers",
-                name: "Resultant R",
                 line: { color: "#a855f7", width: 5 },
                 marker: { size: 7, color: "#a855f7" },
-                hovertemplate: `θ = ${thetaDeg.toFixed(1)}°<extra></extra>`
+                hovertemplate: `R = (%{x:.1f}, %{y:.1f}) | θ = ${thetaDeg.toFixed(1)}°<extra></extra>`
             };
 
-            // Lighter parallelogram lines
             const traceParaAtoB = {
-                x: [a_x, a_x + b_x],
-                y: [a_y, a_y + b_y],
+                x: [a_x, sum_x], y: [a_y, sum_y],
                 mode: "lines",
-                line: { 
-                    color: "#8bbef9", 
-                    width: 4,
-                    dash: "dash"
-                },
-                showlegend: false,
-                hovertemplate: ""
+                line: { color: "#8bbef9", width: 4, dash: "dash" },
+                showlegend: false, hovertemplate: ""
             };
 
             const traceParaBtoA = {
-                x: [b_x, a_x + b_x],
-                y: [b_y, a_y + b_y],
+                x: [b_x, sum_x], y: [b_y, sum_y],
                 mode: "lines",
-                line: { 
-                    color: "#fda4a4", 
-                    width: 4,
-                    dash: "dash"
-                },
-                showlegend: false,
-                hovertemplate: ""
+                line: { color: "#fda4a4", width: 4, dash: "dash" },
+                showlegend: false, hovertemplate: ""
             };
 
-            // FIXED: Simple angle indicator line (much safer)
-            const arcRadius = Math.min(3, axisMax * 0.12);
-            const angleX1 = arcRadius * Math.cos(0);
-            const angleY1 = arcRadius * Math.sin(0);
+            // FIXED angle indicator - simple and safe
+            const arcRadius = Math.min(3, axisMax * 0.15);
+            const angleX1 = arcRadius * 1;
+            const angleY1 = arcRadius * 0;
             const angleX2 = arcRadius * Math.cos(thetaRad);
             const angleY2 = arcRadius * Math.sin(thetaRad);
 
@@ -465,11 +412,7 @@
                 x: [angleX1, angleX2],
                 y: [angleY1, angleY2],
                 mode: "lines",
-                line: { 
-                    color: "#a855f7",
-                    width: 3,
-                    dash: "dot"
-                },
+                line: { color: "#a855f7", width: 3, dash: "dot" },
                 showlegend: false,
                 hovertemplate: `θ = ${thetaDeg.toFixed(1)}°<extra></extra>`
             };
@@ -479,42 +422,26 @@
                 plot_bgcolor: "#ffffff",
                 margin: { l: 40, r: 10, t: 20, b: 40 },
                 xaxis: {
-                    title: "Vector A",
-                    zeroline: true,
-                    zerolinewidth: 2,
-                    zerolinecolor: "#111827",
-                    range: [axisMin, axisMax],
-                    gridcolor: "#e5e7eb",
-                    linecolor: "#111827",
-                    mirror: true
+                    title: "Vector A", zeroline: true, zerolinewidth: 2,
+                    zerolinecolor: "#111827", range: [axisMin, axisMax],
+                    gridcolor: "#e5e7eb", linecolor: "#111827", mirror: true
                 },
                 yaxis: {
-                    title: "Vector B",
-                    zeroline: true,
-                    zerolinewidth: 2,
-                    zerolinecolor: "#111827",
-                    range: [axisMin, axisMax],
-                    gridcolor: "#e5e7eb",
-                    linecolor: "#111827",
-                    mirror: true,
-                    scaleanchor: "x",
-                    scaleratio: 1
+                    title: "Vector B", zeroline: true, zerolinewidth: 2,
+                    zerolinecolor: "#111827", range: [axisMin, axisMax],
+                    gridcolor: "#e5e7eb", linecolor: "#111827", mirror: true,
+                    scaleanchor: "x", scaleratio: 1
                 },
                 showlegend: false
             };
 
-            const config = {
-                responsive: true,
-                displaylogo: false,
-                modeBarButtonsToRemove: ["toImage"],
-                scrollZoom: true
-            };
-
-            Plotly.newPlot("graph", [traceA, traceB, traceR, traceParaAtoB, traceParaBtoA, traceAngle], layout, config);
+            Plotly.newPlot("graph", [traceA, traceB, traceR, traceParaAtoB, traceParaBtoA, traceAngle], layout, {
+                responsive: true, displaylogo: false, scrollZoom: true
+            });
         }
 
+        // Initialize
         addVectors();
     </script>
 </body>
 </html>
-
