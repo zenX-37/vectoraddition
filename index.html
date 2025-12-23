@@ -52,7 +52,7 @@
         }
 
         .panel {
-            border-radius: 16px;
+            border-radius: 13px; /* reduced from 16px (~20% less) */
             border: 1px solid var(--border-subtle);
             box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
             padding: 18px 20px 20px 20px;
@@ -117,7 +117,7 @@
             color: var(--text-main);
             background: #020617;
             border: 1px solid #1e293b;
-            border-radius: 999px;
+            border-radius: 20px; /* reduced from pill (999px) to a subtler rounding */
             outline: none;
             transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
         }
@@ -136,24 +136,24 @@
             color: #e5e7eb;
             background: linear-gradient(135deg, var(--accent), var(--accent-soft));
             border: none;
-            border-radius: 999px;
+            border-radius: 20px; /* slightly less round than before */
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.45);
+            box-shadow: 0 5px 12px rgba(37, 99, 235, 0.22); /* ~50% of previous strength */
             transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
         }
 
         button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 14px 32px rgba(37, 99, 235, 0.6);
-            filter: brightness(1.05);
+            box-shadow: 0 7px 16px rgba(37, 99, 235, 0.3); /* reduced vs before */
+            filter: brightness(1.04);
         }
 
         button:active {
             transform: translateY(0);
-            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
         }
 
         button span.icon {
@@ -172,11 +172,10 @@
             margin-top: 4px;
         }
 
-        /* NEW: white graph section */
         .graph-panel {
             background: #ffffff;
             color: #111827;
-            border-radius: 16px;
+            border-radius: 13px; /* match panel rounding */
             border: 1px solid #e5e7eb;
             box-shadow: 0 14px 40px rgba(15, 23, 42, 0.35);
             padding: 14px 16px 16px 16px;
@@ -192,7 +191,7 @@
             align-items: center;
             gap: 16px;
             padding: 10px 14px;
-            border-radius: 999px;
+            border-radius: 20px; /* slightly less rounded pill */
             background: rgba(15, 23, 42, 0.85);
             border: 1px solid var(--border-subtle);
             font-size: 12px;
@@ -327,14 +326,12 @@
         }
 
         function drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y) {
-            // Compute range so all vectors fit nicely
             const values = [0, a_x, a_y, b_x, b_y, sum_x, sum_y];
             const maxAbs = Math.max(...values.map(v => Math.abs(v)), 5);
             const margin = 1;
             const axisMax = maxAbs + margin;
             const axisMin = -axisMax;
 
-            // Create arrow-like traces using line segments plus markers
             const traceA = {
                 x: [0, a_x],
                 y: [0, a_y],
@@ -395,13 +392,12 @@
                 responsive: true,
                 displaylogo: false,
                 modeBarButtonsToRemove: ["toImage"],
-                scrollZoom: true  // enable mouse wheel zoom
+                scrollZoom: true
             };
 
             Plotly.newPlot("graph", [traceA, traceB, traceR], layout, config);
         }
 
-        // Initial render
         addVectors();
     </script>
 </body>
