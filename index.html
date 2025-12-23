@@ -347,12 +347,11 @@
             const sum_y = a_y + b_y;
             const magR = Math.sqrt(sum_x * sum_x + sum_y * sum_y);
             const thetaRad = Math.atan2(sum_y, sum_x);
-            const thetaDeg = (thetaRad * 180 / Math.PI + 360) % 360; // Normalize to 0-360
+            const thetaDeg = (thetaRad * 180 / Math.PI + 360) % 360;
 
             document.getElementById('resultant-display').textContent =
                 `R = (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)}), |R| = ${magR.toFixed(2)}, θ = ${thetaDeg.toFixed(1)}°`;
 
-            // Pass ALL values needed
             drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y, thetaDeg, thetaRad);
         }
 
@@ -401,18 +400,26 @@
                 showlegend: false, hovertemplate: ""
             };
 
-            // FIXED angle indicator - simple and safe
-            const arcRadius = Math.min(3, axisMax * 0.15);
-            const angleX1 = arcRadius * 1;
-            const angleY1 = arcRadius * 0;
-            const angleX2 = arcRadius * Math.cos(thetaRad);
-            const angleY2 = arcRadius * Math.sin(thetaRad);
+            // NEW: Curved grey angle arc (solid line)
+            const arcRadius = Math.min(3.5, axisMax * 0.18);
+            const numPoints = 50;
+            const arcX = [];
+            const arcY = [];
+            for (let i = 0; i <= numPoints; i++) {
+                const angle = (thetaRad * i) / numPoints;
+                arcX.push(arcRadius * Math.cos(angle));
+                arcY.push(arcRadius * Math.sin(angle));
+            }
 
             const traceAngle = {
-                x: [angleX1, angleX2],
-                y: [angleY1, angleY2],
+                x: arcX,
+                y: arcY,
                 mode: "lines",
-                line: { color: "#a855f7", width: 3, dash: "dot" },
+                line: { 
+                    color: "#6b7280",  // Grey color
+                    width: 3.5,
+                    shape: "spline"  // Smooth curve
+                },
                 showlegend: false,
                 hovertemplate: `θ = ${thetaDeg.toFixed(1)}°<extra></extra>`
             };
@@ -440,7 +447,6 @@
             });
         }
 
-        // Initialize
         addVectors();
     </script>
 </body>
