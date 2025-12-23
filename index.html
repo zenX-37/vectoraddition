@@ -88,10 +88,12 @@
             gap: 10px;
         }
 
+        /* Updated: Both headers now match exactly */
         .panel-header {
             font-size: 18px;
             font-weight: 500;
             margin-bottom: 8px;
+            color: var(--accent);
         }
 
         .panel-description {
@@ -198,10 +200,10 @@
         }
 
         .resultant-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--accent);
+            font-size: 18px; /* Now matches .panel-header */
+            font-weight: 500; /* Now matches .panel-header */
+            margin-bottom: 8px; /* Now matches .panel-header */
+            color: var(--accent); /* Now matches .panel-header */
         }
 
         .resultant-formula {
@@ -333,7 +335,7 @@
                     <span>Add vectors</span>
                 </button>
 
-                <!-- SINGLE Resultant vector section (no duplicate summary above) -->
+                <!-- SINGLE Resultant vector section -->
                 <div class="resultant-section">
                     <div class="resultant-title">Resultant vector</div>
                     <div class="resultant-formula">
