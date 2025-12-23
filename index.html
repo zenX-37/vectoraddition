@@ -88,7 +88,6 @@
             gap: 10px;
         }
 
-        /* Updated: Both headers now match exactly */
         .panel-header {
             font-size: 18px;
             font-weight: 500;
@@ -192,7 +191,6 @@
             color: #ffffff;
         }
 
-        /* Resultant vector section styles */
         .resultant-section {
             margin-top: 16px;
             padding-top: 10px;
@@ -200,10 +198,10 @@
         }
 
         .resultant-title {
-            font-size: 18px; /* Now matches .panel-header */
-            font-weight: 500; /* Now matches .panel-header */
-            margin-bottom: 8px; /* Now matches .panel-header */
-            color: var(--accent); /* Now matches .panel-header */
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--accent);
         }
 
         .resultant-formula {
@@ -297,9 +295,7 @@
                     Enter the x and y components for each vector. Press <strong>Add vectors</strong> to update the graph.
                 </div>
 
-                <!-- Vector A and B side by side -->
                 <div class="vectors-row">
-                    <!-- Vector A -->
                     <div class="inputs-block">
                         <div class="vector-column">
                             <div class="vector-header">Vector A</div>
@@ -314,7 +310,6 @@
                         </div>
                     </div>
 
-                    <!-- Vector B -->
                     <div class="inputs-block">
                         <div class="vector-column">
                             <div class="vector-header">Vector B</div>
@@ -335,7 +330,6 @@
                     <span>Add vectors</span>
                 </button>
 
-                <!-- SINGLE Resultant vector section -->
                 <div class="resultant-section">
                     <div class="resultant-title">Resultant vector</div>
                     <div class="resultant-formula">
@@ -352,7 +346,6 @@
                 </div>
             </div>
 
-            <!-- RIGHT PANEL: INTERACTIVE GRAPH -->
             <div class="right-panel">
                 <div class="graph-panel">
                     <div id="graph"></div>
@@ -386,14 +379,10 @@
             const sum_x = a_x + b_x;
             const sum_y = a_y + b_y;
 
-            // Magnitude of resultant using Pythagorean theorem
             const magR = Math.sqrt(sum_x * sum_x + sum_y * sum_y);
-
-            // Angle of resultant in degrees (atan2 handles quadrants correctly)
             const thetaRad = Math.atan2(sum_y, sum_x);
             const thetaDeg = thetaRad * 180 / Math.PI;
 
-            // Update only the main resultant display
             document.getElementById('resultant-display').textContent =
                 `R = (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)}), |R| = ${magR.toFixed(2)}, θ = ${thetaDeg.toFixed(2)}°`;
 
@@ -407,6 +396,7 @@
             const axisMax = maxAbs + margin;
             const axisMin = -axisMax;
 
+            // Main Vector A (solid, thick)
             const traceA = {
                 x: [0, a_x],
                 y: [0, a_y],
@@ -416,6 +406,7 @@
                 marker: { size: 6, color: "#3b82f6" }
             };
 
+            // Main Vector B (solid, thick)
             const traceB = {
                 x: [0, b_x],
                 y: [0, b_y],
@@ -425,6 +416,7 @@
                 marker: { size: 6, color: "#f97373" }
             };
 
+            // Main Resultant R (solid, thickest)
             const traceR = {
                 x: [0, sum_x],
                 y: [0, sum_y],
@@ -432,6 +424,35 @@
                 name: "Resultant R",
                 line: { color: "#a855f7", width: 5 },
                 marker: { size: 7, color: "#a855f7" }
+            };
+
+            // NEW: Parallelogram helper lines (dashed, transparent, no labels)
+            const traceParaAtoB = {
+                x: [a_x, a_x + b_x],
+                y: [a_y, a_y + b_y],
+                mode: "lines",
+                line: { 
+                    color: "#3b82f6", 
+                    width: 2, 
+                    dash: "dash",
+                    opacity: 0.4 
+                },
+                showlegend: false,
+                hovertemplate: ""
+            };
+
+            const traceParaBtoA = {
+                x: [b_x, a_x + b_x],
+                y: [b_y, a_y + b_y],
+                mode: "lines",
+                line: { 
+                    color: "#f97373", 
+                    width: 2, 
+                    dash: "dash",
+                    opacity: 0.4 
+                },
+                showlegend: false,
+                hovertemplate: ""
             };
 
             const layout = {
@@ -470,10 +491,10 @@
                 scrollZoom: true
             };
 
-            Plotly.newPlot("graph", [traceA, traceB, traceR], layout, config);
+            // Add parallelogram traces
+            Plotly.newPlot("graph", [traceA, traceB, traceR, traceParaAtoB, traceParaBtoA], layout, config);
         }
 
-        // Initial load
         addVectors();
     </script>
 </body>
