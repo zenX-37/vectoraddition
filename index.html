@@ -45,7 +45,6 @@
             height: 100%;
         }
 
-        /* Title + subtitle back to left */
         .page-title {
             font-size: 28px;
             font-weight: 600;
@@ -67,7 +66,6 @@
             min-height: 0;
         }
 
-        /* Panel rounding kept as before, shadows reduced by ~50% */
         .panel {
             border-radius: 9px;
             border: 1px solid var(--border-subtle);
@@ -102,8 +100,20 @@
             margin-bottom: 14px;
         }
 
+        /* NEW: container for A and B side by side */
+        .vectors-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .inputs-block {
+            flex: 1;
+        }
+
         .inputs-row {
-            margin-bottom: 14px;
+            margin-bottom: 10px;
         }
 
         .vector-column {
@@ -115,6 +125,7 @@
         .vector-header {
             font-size: 14px;
             font-weight: 500;
+            margin-bottom: 2px;
         }
 
         .component-line {
@@ -149,7 +160,7 @@
 
         button {
             margin-top: 6px;
-            padding: 9px 14px; /* reduced length */
+            padding: 9px 14px;
             font-size: 13px;
             font-weight: 500;
             color: #e5e7eb;
@@ -160,7 +171,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            box-shadow: 0 2.5px 6px rgba(37, 99, 235, 0.11); /* ~50% of previous */
+            box-shadow: 0 2.5px 6px rgba(37, 99, 235, 0.11);
             transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
         }
 
@@ -175,7 +186,6 @@
             box-shadow: 0 2px 5px rgba(37, 99, 235, 0.12);
         }
 
-        /* Plus icon forced to white */
         button span.icon {
             font-size: 14px;
             color: #ffffff;
@@ -198,7 +208,7 @@
             color: #111827;
             border-radius: 9px;
             border: 1px solid #e5e7eb;
-            box-shadow: 0 7px 20px rgba(15, 23, 42, 0.18); /* reduced shadow */
+            box-shadow: 0 7px 20px rgba(15, 23, 42, 0.18);
             padding: 14px 16px 16px 16px;
             flex: 1;
             min-height: 0;
@@ -216,11 +226,11 @@
             gap: 16px;
             padding: 10px 14px;
             border-radius: 14px;
-            background: rgba(15, 23, 42, 0.75); /* slightly less intense */
+            background: rgba(15, 23, 42, 0.75);
             border: 1px solid var(--border-subtle);
             font-size: 12px;
             color: var(--text-muted);
-            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25); /* reduce legend shadow */
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
         }
 
         .legend-item {
@@ -246,6 +256,9 @@
             .left-panel {
                 max-width: 100%;
             }
+            .vectors-row {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -264,32 +277,35 @@
                     Enter the x and y components for each vector. Press <strong>Add vectors</strong> to update the graph.
                 </div>
 
-                <!-- Vector A -->
-                <div class="inputs-row">
-                    <div class="vector-column">
-                        <div class="vector-header">Vector A</div>
-                        <div class="component-line">
-                            <span>x =</span>
-                            <input type="number" id="a_x" value="12.5" step="0.1">
-                        </div>
-                        <div class="component-line">
-                            <span>y =</span>
-                            <input type="number" id="a_y" value="25" step="0.1">
+                <!-- Vector A and B side by side -->
+                <div class="vectors-row">
+                    <!-- Vector A -->
+                    <div class="inputs-block">
+                        <div class="vector-column">
+                            <div class="vector-header">Vector A</div>
+                            <div class="component-line">
+                                <span>x =</span>
+                                <input type="number" id="a_x" value="12.5" step="0.1">
+                            </div>
+                            <div class="component-line">
+                                <span>y =</span>
+                                <input type="number" id="a_y" value="25" step="0.1">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Vector B -->
-                <div class="inputs-row">
-                    <div class="vector-column">
-                        <div class="vector-header">Vector B</div>
-                        <div class="component-line">
-                            <span>x =</span>
-                            <input type="number" id="b_x" value="6" step="0.1">
-                        </div>
-                        <div class="component-line">
-                            <span>y =</span>
-                            <input type="number" id="b_y" value="40" step="0.1">
+                    <!-- Vector B -->
+                    <div class="inputs-block">
+                        <div class="vector-column">
+                            <div class="vector-header">Vector B</div>
+                            <div class="component-line">
+                                <span>x =</span>
+                                <input type="number" id="b_x" value="6" step="0.1">
+                            </div>
+                            <div class="component-line">
+                                <span>y =</span>
+                                <input type="number" id="b_y" value="40" step="0.1">
+                            </div>
                         </div>
                     </div>
                 </div>
