@@ -5,30 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vector Addition Calculator</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        canvas { border: 1px solid #000; display: block; margin: 20px 0; }
-        input { margin: 5px; padding: 8px; width: 80px; }
-        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        #result { font-size: 24px; font-weight: bold; margin: 20px 0; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Main layout: left (controls) + right (canvas) */
+        .app-container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Left panel: 1 part */
+        .left-panel {
+            flex: 1;
+            max-width: 350px;
+        }
+
+        /* Right panel: 2 parts */
+        .right-panel {
+            flex: 2;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .inputs-row {
+            margin-bottom: 10px;
+        }
+
+        label {
+            margin-right: 5px;
+        }
+
+        input {
+            margin: 5px 10px 5px 0;
+            padding: 8px;
+            width: 90px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #result {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+        }
+
+        canvas {
+            border: 1px solid #000;
+            display: block;
+            max-width: 100%;
+        }
+
+        /* Stack vertically on small screens */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Vector Addition Calculator (2D)</h1>
-    <p>Enter components for Vector A (x1, y1) and Vector B (x2, y2). Click Add to compute and visualize.</p>
-    
-    <div>
-        <label>Vector A: x = <input type="number" id="a_x" value="2" step="0.1"></label>
-        <label>y = <input type="number" id="a_y" value="1" step="0.1"></label>
+    <div class="app-container">
+        <!-- LEFT: controls (1 part) -->
+        <div class="left-panel">
+            <h1>Vector Addition Calculator (2D)</h1>
+            <p>Enter components for Vector A (x1, y1) and Vector B (x2, y2). Click Add to compute and visualize.</p>
+
+            <div class="inputs-row">
+                <span>Vector A: </span>
+                <label>x = <input type="number" id="a_x" value="12.5" step="0.1"></label>
+                <label>y = <input type="number" id="a_y" value="25" step="0.1"></label>
+            </div>
+
+            <div class="inputs-row">
+                <span>Vector B: </span>
+                <label>x = <input type="number" id="b_x" value="6" step="0.1"></label>
+                <label>y = <input type="number" id="b_y" value="40" step="0.1"></label>
+            </div>
+
+            <button onclick="addVectors()">Add Vectors</button>
+            <div id="result"></div>
+        </div>
+
+        <!-- RIGHT: canvas (2 parts) -->
+        <div class="right-panel">
+            <canvas id="canvas" width="600" height="400"></canvas>
+        </div>
     </div>
-    <div>
-        <label>Vector B: x = <input type="number" id="b_x" value="1" step="0.1"></label>
-        <label>y = <input type="number" id="b_y" value="0" step="0.1"></label>
-    </div>
-    <button onclick="addVectors()">Add Vectors</button>
-    
-    <div id="result"></div>
-    <canvas id="canvas" width="600" height="400"></canvas>
 
     <script>
         function addVectors() {
@@ -36,26 +117,26 @@
             const a_y = parseFloat(document.getElementById('a_y').value);
             const b_x = parseFloat(document.getElementById('b_x').value);
             const b_y = parseFloat(document.getElementById('b_y').value);
-            
+
             const sum_x = a_x + b_x;
             const sum_y = a_y + b_y;
-            
-            document.getElementById('result').innerHTML = 
+
+            document.getElementById('result').innerHTML =
                 `Resultant Vector: (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)})`;
-            
+
             drawVectors(a_x, a_y, b_x, b_y, sum_x, sum_y);
         }
-        
+
         function drawVectors(a_x, a_y, b_x, b_y, sum_x, sum_y) {
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
+
             const scale = 15; // Pixels per unit
             const originX = 100;
             const originY = 300;
-            
-            // Draw axes
+
+            // Axes
             ctx.strokeStyle = '#ccc';
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -64,7 +145,7 @@
             ctx.moveTo(originX, 50);
             ctx.lineTo(originX, 350);
             ctx.stroke();
-            
+
             // Vector A (blue)
             ctx.strokeStyle = 'blue';
             ctx.lineWidth = 3;
@@ -73,8 +154,9 @@
             ctx.lineTo(originX + a_x * scale, originY - a_y * scale);
             ctx.stroke();
             ctx.fillStyle = 'blue';
+            ctx.font = '14px Arial';
             ctx.fillText('A', originX + a_x * scale + 5, originY - a_y * scale - 5);
-            
+
             // Vector B (red) from end of A
             ctx.strokeStyle = 'red';
             ctx.beginPath();
@@ -82,8 +164,12 @@
             ctx.lineTo(originX + sum_x * scale, originY - sum_y * scale);
             ctx.stroke();
             ctx.fillStyle = 'red';
-            ctx.fillText('B', originX + a_x * scale + b_x * scale / 2, originY - a_y * scale - b_y * scale / 2);
-            
+            ctx.fillText(
+                'B',
+                originX + a_x * scale + b_x * scale / 2,
+                originY - a_y * scale - b_y * scale / 2
+            );
+
             // Resultant (green)
             ctx.strokeStyle = 'green';
             ctx.lineWidth = 5;
@@ -92,15 +178,19 @@
             ctx.lineTo(originX + sum_x * scale, originY - sum_y * scale);
             ctx.stroke();
             ctx.fillStyle = 'green';
-            ctx.fillText('R = A + B', originX + sum_x * scale / 2, originY - sum_y * scale / 2);
-            
-            // Labels
+            ctx.fillText(
+                'R = A + B',
+                originX + sum_x * scale / 2,
+                originY - sum_y * scale / 2
+            );
+
+            // Axis labels
             ctx.fillStyle = '#000';
             ctx.font = '16px Arial';
             ctx.fillText('X', 550, originY + 15);
             ctx.fillText('Y', originX + 5, 60);
         }
-        
+
         // Initial draw
         addVectors();
     </script>
