@@ -193,7 +193,6 @@
             margin-bottom: 12px;
         }
 
-        /* NEW: Separated result display */
         .resultant-values {
             display: flex;
             flex-direction: column;
@@ -209,7 +208,8 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .result-components { border-color: #3b82f6; color: var(--text-main); }
+        /* UPDATED: Purple for R components (matches graph), others unchanged */
+        .result-components { border-color: #a855f7; color: var(--text-main); }
         .result-magnitude { border-color: #10b981; color: var(--text-main); }
         .result-angle { border-color: #f59e0b; color: var(--text-main); }
 
@@ -318,7 +318,6 @@
                         θ = tan⁻¹[(A<sub>y</sub> + B<sub>y</sub>)/(A<sub>x</sub> + B<sub>x</sub>)] in degrees
                     </div>
                     
-                    <!-- NEW: Separated results display -->
                     <div class="resultant-values" id="resultant-display">
                         <div class="result-item result-components">
                             R = (0.00, 0.00)
@@ -367,7 +366,6 @@
             const sum_y = a_y + b_y;
             const magR = Math.sqrt(sum_x * sum_x + sum_y * sum_y);
             
-            // Using tan^-1 (Math.atan) with quadrant correction
             let thetaRad, thetaDeg;
             if (sum_x === 0) {
                 thetaRad = sum_y >= 0 ? Math.PI / 2 : -Math.PI / 2;
@@ -381,7 +379,6 @@
             }
             thetaDeg = (thetaRad * 180 / Math.PI + 360) % 360;
 
-            // NEW: Update each result separately
             const display = document.getElementById('resultant-display');
             display.innerHTML = `
                 <div class="result-item result-components">
@@ -443,7 +440,7 @@
                 showlegend: false, hovertemplate: ""
             };
 
-            // Curved grey angle arc (solid line)
+            // UPDATED: Orange angle arc (matches result border)
             const arcRadius = Math.min(3.5, axisMax * 0.18);
             const numPoints = 50;
             const arcX = [];
@@ -459,7 +456,7 @@
                 y: arcY,
                 mode: "lines",
                 line: { 
-                    color: "#6b7280",
+                    color: "#f59e0b",  // Orange (matches result-angle border)
                     width: 3.5,
                     shape: "spline"
                 },
