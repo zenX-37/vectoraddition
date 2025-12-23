@@ -362,7 +362,7 @@
                     </div>
                     <div class="legend-item">
                         <div class="legend-swatch swatch-r"></div>
-                        <span>Resultant R = A + B (hover for θ)</span>
+                        <span>Resultant R = A + B</span>
                     </div>
                 </div>
             </div>
@@ -396,7 +396,7 @@
             const axisMax = maxAbs + margin;
             const axisMin = -axisMax;
 
-            // Main Vector A (solid, thick)
+            // Main Vector A
             const traceA = {
                 x: [0, a_x],
                 y: [0, a_y],
@@ -406,7 +406,7 @@
                 marker: { size: 6, color: "#3b82f6" }
             };
 
-            // Main Vector B (solid, thick)
+            // Main Vector B
             const traceB = {
                 x: [0, b_x],
                 y: [0, b_y],
@@ -416,7 +416,7 @@
                 marker: { size: 6, color: "#f97373" }
             };
 
-            // Main Resultant R with hover showing angle
+            // Main Resultant R with hover
             const traceR = {
                 x: [0, sum_x],
                 y: [0, sum_y],
@@ -427,13 +427,13 @@
                 hovertemplate: `θ = ${thetaDeg.toFixed(1)}°<extra></extra>`
             };
 
-            // Parallelogram helper lines (lighter shades - mixed with white)
+            // Lighter parallelogram lines
             const traceParaAtoB = {
                 x: [a_x, a_x + b_x],
                 y: [a_y, a_y + b_y],
                 mode: "lines",
                 line: { 
-                    color: "#8bbef9",  // Lighter blue (blue + white)
+                    color: "#8bbef9", 
                     width: 4,
                     dash: "dash"
                 },
@@ -446,7 +446,7 @@
                 y: [b_y, a_y + b_y],
                 mode: "lines",
                 line: { 
-                    color: "#fda4a4",  // Lighter red (red + white)
+                    color: "#fda4a4", 
                     width: 4,
                     dash: "dash"
                 },
@@ -454,20 +454,16 @@
                 hovertemplate: ""
             };
 
-            // NEW: Angle arc from x-axis to resultant (hover shows θ value)
-            const r = Math.min(2.5, magR * 0.15 || 2); // Scale arc radius
-            const numPoints = 50;
-            const arcX = [];
-            const arcY = [];
-            for (let i = 0; i <= numPoints; i++) {
-                const angle = (thetaDeg / 180) * Math.PI * (i / numPoints);
-                arcX.push(r * Math.cos(angle));
-                arcY.push(r * Math.sin(angle));
-            }
+            // FIXED: Simple angle indicator line (much safer)
+            const arcRadius = Math.min(3, axisMax * 0.12);
+            const angleX1 = arcRadius * Math.cos(0);
+            const angleY1 = arcRadius * Math.sin(0);
+            const angleX2 = arcRadius * Math.cos(thetaRad);
+            const angleY2 = arcRadius * Math.sin(thetaRad);
 
             const traceAngle = {
-                x: arcX,
-                y: arcY,
+                x: [angleX1, angleX2],
+                y: [angleY1, angleY2],
                 mode: "lines",
                 line: { 
                     color: "#a855f7",
@@ -475,7 +471,7 @@
                     dash: "dot"
                 },
                 showlegend: false,
-                hovertemplate: `Resultant angle: ${thetaDeg.toFixed(1)}°<extra></extra>`
+                hovertemplate: `θ = ${thetaDeg.toFixed(1)}°<extra></extra>`
             };
 
             const layout = {
@@ -521,3 +517,4 @@
     </script>
 </body>
 </html>
+
