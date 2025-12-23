@@ -426,16 +426,16 @@
                 marker: { size: 7, color: "#a855f7" }
             };
 
-            // NEW: Parallelogram helper lines (dashed, transparent, no labels)
+            // Parallelogram helper lines (same thickness, MUCH more transparent)
             const traceParaAtoB = {
                 x: [a_x, a_x + b_x],
                 y: [a_y, a_y + b_y],
                 mode: "lines",
                 line: { 
                     color: "#3b82f6", 
-                    width: 2, 
+                    width: 4,  // Now matches main vectors
                     dash: "dash",
-                    opacity: 0.4 
+                    opacity: 0.2  // Reduced from 0.4 to 0.2 (much more transparent)
                 },
                 showlegend: false,
                 hovertemplate: ""
@@ -447,9 +447,9 @@
                 mode: "lines",
                 line: { 
                     color: "#f97373", 
-                    width: 2, 
+                    width: 4,  // Now matches main vectors
                     dash: "dash",
-                    opacity: 0.4 
+                    opacity: 0.2  // Reduced from 0.4 to 0.2 (much more transparent)
                 },
                 showlegend: false,
                 hovertemplate: ""
@@ -491,7 +491,6 @@
                 scrollZoom: true
             };
 
-            // Add parallelogram traces
             Plotly.newPlot("graph", [traceA, traceB, traceR, traceParaAtoB, traceParaBtoA], layout, config);
         }
 
