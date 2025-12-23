@@ -100,7 +100,6 @@
             margin-bottom: 14px;
         }
 
-        /* NEW: container for A and B side by side */
         .vectors-row {
             display: flex;
             gap: 16px;
@@ -201,6 +200,32 @@
             font-size: 12px;
             color: var(--text-muted);
             margin-top: 4px;
+        }
+
+        /* NEW: Resultant vector section */
+        .resultant-section {
+            margin-top: 16px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
+        .resultant-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .resultant-formula {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .resultant-value {
+            font-size: 13px;
+            color: var(--text-main);
+            font-weight: 500;
         }
 
         .graph-panel {
@@ -315,8 +340,21 @@
                     <span>Add vectors</span>
                 </button>
 
+                <!-- EXISTING numeric summary (optional keep) -->
                 <div id="result"></div>
                 <div class="result-sub" id="result-sub"></div>
+
+                <!-- NEW: Resultant vector section -->
+                <div class="resultant-section">
+                    <div class="resultant-title">Resultant vector</div>
+                    <div class="resultant-formula">
+                        Given A = (A<sub>x</sub>, A<sub>y</sub>) and B = (B<sub>x</sub>, B<sub>y</sub>):<br>
+                        R = A + B = (A<sub>x</sub> + B<sub>x</sub>, A<sub>y</sub> + B<sub>y</sub>)
+                    </div>
+                    <div class="resultant-value" id="resultant-display">
+                        R = (0.00, 0.00)
+                    </div>
+                </div>
             </div>
 
             <!-- RIGHT PANEL: INTERACTIVE GRAPH -->
@@ -362,6 +400,10 @@
 
             document.getElementById('result-sub').innerHTML =
                 `|A| = ${magA.toFixed(2)}, |B| = ${magB.toFixed(2)}, |R| = ${magR.toFixed(2)}`;
+
+            // NEW: show resultant in dedicated section
+            document.getElementById('resultant-display').textContent =
+                `R = (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)})`;
 
             drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y);
         }
@@ -439,6 +481,7 @@
             Plotly.newPlot("graph", [traceA, traceB, traceR], layout, config);
         }
 
+        // Initial draw and initial resultant text
         addVectors();
     </script>
 </body>
