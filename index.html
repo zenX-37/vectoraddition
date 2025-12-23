@@ -58,16 +58,16 @@
 
         /* Smaller input and lighter outline */
         input {
-            padding: 4px 6px;          /* smaller height/width */
-            width: 70px;               /* narrower box */
+            padding: 4px 6px;
+            width: 70px;
             font-size: 14px;
-            border: 1px solid #cccccc; /* light gray outline */
+            border: 1px solid #cccccc;
             border-radius: 3px;
         }
 
         input:focus {
             outline: none;
-            border-color: #a0c4ff;     /* lighter blue on focus */
+            border-color: #a0c4ff;
             box-shadow: 0 0 2px #a0c4ff;
         }
 
@@ -169,65 +169,147 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const scale = 15;
+            const scale = 15;            // pixels per unit
             const originX = 100;
             const originY = 300;
+            const maxX = 550;
+            const minX = 50;
+            const maxY = 350;
+            const minY = 50;
 
-            // Axes
-            ctx.strokeStyle = '#ccc';
+            // --- Axes ---
+            ctx.strokeStyle = '#cccccc';
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(50, originY);
-            ctx.lineTo(550, originY);
-            ctx.moveTo(originX, 50);
-            ctx.lineTo(originX, 350);
+            // x-axis
+            ctx.moveTo(minX, originY);
+            ctx.lineTo(maxX, originY);
+            // y-axis
+            ctx.moveTo(originX, minY);
+            ctx.lineTo(originX, maxY);
             ctx.stroke();
 
-            // Vector A
+            // --- Axis ticks and numbers ---
+            ctx.fillStyle = '#555555';
+            ctx.font = '12px Arial';
+
+            // X-axis ticks
+            for (let x = originX; x <= maxX; x += scale) {
+                const value = (x - originX) / scale;
+                if (value === 0) continue;
+                ctx.beginPath();
+                ctx.moveTo(x, originY - 4);
+                ctx.lineTo(x, originY + 4);
+                ctx.stroke();
+                ctx.fillText(value.toString(), x - 4, originY + 16);
+            }
+            for (let x = originX - scale; x >= minX; x -= scale) {
+                const value = (x - originX) / scale;
+                if (value === 0) continue;
+                ctx.beginPath();
+                ctx.moveTo(x, originY - 4);
+                ctx.lineTo(x, originY + 4);
+                ctx.stroke();
+                ctx.fillText(value.toString(), x - 8, originY + 16);
+            }
+
+            // Y-axis ticks
+            for (let y = originY; y >= minY; y -= scale) {
+                const value = (originY - y) / scale;
+                if (value === 0) continue;
+                ctx.beginPath();
+                ctx.moveTo(originX - 4, y);
+                ctx.lineTo(originX + 4, y);
+                ctx.stroke();
+                ctx.fillText(value.toString(), originX - 24, y + 4);
+            }
+            for (let y = originY + scale; y <= maxY; y += scale) {
+                const value = (originY - y) / scale;
+                if (value === 0) continue;
+                ctx.beginPath();
+                ctx.moveTo(originX - 4, y);
+                ctx.lineTo(originX + 4, y);
+                ctx.stroke();
+                ctx.fillText(value.toString(), originX - 28, y + 4);
+            }
+
+            // Axis labels
+            ctx.fillStyle = '#000000';
+            ctx.font = '16px Arial';
+            ctx.fillText('X', maxX - 10, originY + 20);
+            ctx.fillText('Y', originX + 8, minY + 15);
+
+            // --- Vector A (blue) ---
             ctx.strokeStyle = 'blue';
             ctx.lineWidth = 3;
             ctx.beginPath();
             ctx.moveTo(originX, originY);
             ctx.lineTo(originX + a_x * scale, originY - a_y * scale);
             ctx.stroke();
-            ctx.fillStyle = 'blue';
-            ctx.font = '14px Arial';
-            ctx.fillText('A', originX + a_x * scale + 5, originY - a_y * scale - 5);
 
-            // Vector B
+            // --- Vector B (red) from origin (to make legend clearer) ---
             ctx.strokeStyle = 'red';
+            ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.moveTo(originX + a_x * scale, originY - a_y * scale);
-            ctx.lineTo(originX + sum_x * scale, originY - sum_y * scale);
+            ctx.moveTo(originX, originY);
+            ctx.lineTo(originX + b_x * scale, originY - b_y * scale);
             ctx.stroke();
-            ctx.fillStyle = 'red';
-            ctx.fillText(
-                'B',
-                originX + a_x * scale + b_x * scale / 2,
-                originY - a_y * scale - b_y * scale / 2
-            );
 
-            // Resultant
+            // --- Resultant R (green) from origin ---
             ctx.strokeStyle = 'green';
-            ctx.lineWidth = 5;
+            ctx.lineWidth = 4;
             ctx.beginPath();
             ctx.moveTo(originX, originY);
             ctx.lineTo(originX + sum_x * scale, originY - sum_y * scale);
             ctx.stroke();
-            ctx.fillStyle = 'green';
-            ctx.fillText(
-                'R = A + B',
-                originX + sum_x * scale / 2,
-                originY - sum_y * scale / 2
-            );
 
-            // Axis labels
-            ctx.fillStyle = '#000';
-            ctx.font = '16px Arial';
-            ctx.fillText('X', 550, originY + 15);
-            ctx.fillText('Y', originX + 5, 60);
+            // --- Legend box ---
+            const legendX = 360;
+            const legendY = 60;
+            const legendW = 200;
+            const legendH = 70;
+
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.strokeStyle = '#cccccc';
+            ctx.lineWidth = 1;
+            ctx.fillRect(legendX, legendY, legendW, legendH);
+            ctx.strokeRect(legendX, legendY, legendW, legendH);
+
+            ctx.font = '13px Arial';
+            const lineHeight = 18;
+            let textY = legendY + 18;
+
+            // Vector A legend
+            ctx.strokeStyle = 'blue';
+            ctx.beginPath();
+            ctx.moveTo(legendX + 10, textY - 5);
+            ctx.lineTo(legendX + 40, textY - 5);
+            ctx.stroke();
+            ctx.fillStyle = '#000000';
+            ctx.fillText('Vector A', legendX + 50, textY);
+
+            // Vector B legend
+            textY += lineHeight;
+            ctx.strokeStyle = 'red';
+            ctx.beginPath();
+            ctx.moveTo(legendX + 10, textY - 5);
+            ctx.lineTo(legendX + 40, textY - 5);
+            ctx.stroke();
+            ctx.fillStyle = '#000000';
+            ctx.fillText('Vector B', legendX + 50, textY);
+
+            // Resultant legend
+            textY += lineHeight;
+            ctx.strokeStyle = 'green';
+            ctx.beginPath();
+            ctx.moveTo(legendX + 10, textY - 5);
+            ctx.lineTo(legendX + 40, textY - 5);
+            ctx.stroke();
+            ctx.fillStyle = '#000000';
+            ctx.fillText('Resultant R = A + B', legendX + 50, textY);
         }
 
+        // Initial draw
         addVectors();
     </script>
 </body>
