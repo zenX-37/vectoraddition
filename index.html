@@ -305,7 +305,7 @@
                         Magnitude (Pythagorean theorem):<br>
                         |R| = √[(A<sub>x</sub> + B<sub>x</sub>)² + (A<sub>y</sub> + B<sub>y</sub>)²]<br><br>
                         Direction (angle from positive x-axis):<br>
-                        θ = atan2(A<sub>y</sub> + B<sub>y</sub>, A<sub>x</sub> + B<sub>x</sub>) in degrees
+                        θ = tan⁻¹[(A<sub>y</sub> + B<sub>y</sub>)/(A<sub>x</sub> + B<sub>x</sub>)] in degrees
                     </div>
                     <div class="resultant-value" id="resultant-display">
                         R = (0.00, 0.00), |R| = 0.00, θ = 0.00°
@@ -346,8 +346,21 @@
             const sum_x = a_x + b_x;
             const sum_y = a_y + b_y;
             const magR = Math.sqrt(sum_x * sum_x + sum_y * sum_y);
-            const thetaRad = Math.atan2(sum_y, sum_x);
-            const thetaDeg = (thetaRad * 180 / Math.PI + 360) % 360;
+            
+            // CHANGED: Using tan^-1 (Math.atan) instead of atan2
+            let thetaRad, thetaDeg;
+            if (sum_x === 0) {
+                thetaRad = sum_y >= 0 ? Math.PI / 2 : -Math.PI / 2;
+            } else {
+                thetaRad = Math.atan(sum_y / sum_x); // tan^-1(y/x)
+            }
+            // Adjust for correct quadrant
+            if (sum_x < 0) {
+                thetaRad += Math.PI;
+            } else if (sum_y < 0 && sum_x > 0) {
+                thetaRad += 2 * Math.PI;
+            }
+            thetaDeg = (thetaRad * 180 / Math.PI + 360) % 360;
 
             document.getElementById('resultant-display').textContent =
                 `R = (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)}), |R| = ${magR.toFixed(2)}, θ = ${thetaDeg.toFixed(1)}°`;
@@ -400,7 +413,7 @@
                 showlegend: false, hovertemplate: ""
             };
 
-            // NEW: Curved grey angle arc (solid line)
+            // Curved grey angle arc (solid line)
             const arcRadius = Math.min(3.5, axisMax * 0.18);
             const numPoints = 50;
             const arcX = [];
