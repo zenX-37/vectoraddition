@@ -194,4 +194,32 @@
             ctx.fillStyle = 'red';
             ctx.fillText(
                 'B',
-                originX + a_x * scale + b_x
+                originX + a_x * scale + b_x * scale / 2,
+                originY - a_y * scale - b_y * scale / 2
+            );
+
+            // Resultant
+            ctx.strokeStyle = 'green';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(originX, originY);
+            ctx.lineTo(originX + sum_x * scale, originY - sum_y * scale);
+            ctx.stroke();
+            ctx.fillStyle = 'green';
+            ctx.fillText(
+                'R = A + B',
+                originX + sum_x * scale / 2,
+                originY - sum_y * scale / 2
+            );
+
+            // Axis labels
+            ctx.fillStyle = '#000';
+            ctx.font = '16px Arial';
+            ctx.fillText('X', 550, originY + 15);
+            ctx.fillText('Y', originX + 5, 60);
+        }
+
+        addVectors();
+    </script>
+</body>
+</html>
