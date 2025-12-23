@@ -362,7 +362,7 @@
                     </div>
                     <div class="legend-item">
                         <div class="legend-swatch swatch-r"></div>
-                        <span>Resultant R = A + B</span>
+                        <span>Resultant R = A + B (hover for θ)</span>
                     </div>
                 </div>
             </div>
@@ -386,10 +386,10 @@
             document.getElementById('resultant-display').textContent =
                 `R = (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)}), |R| = ${magR.toFixed(2)}, θ = ${thetaDeg.toFixed(2)}°`;
 
-            drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y);
+            drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y, thetaDeg);
         }
 
-        function drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y) {
+        function drawPlotlyVectors(a_x, a_y, b_x, b_y, sum_x, sum_y, thetaDeg) {
             const values = [0, a_x, a_y, b_x, b_y, sum_x, sum_y];
             const maxAbs = Math.max(...values.map(v => Math.abs(v)), 5);
             const margin = 1;
@@ -416,26 +416,26 @@
                 marker: { size: 6, color: "#f97373" }
             };
 
-            // Main Resultant R (solid, thickest)
+            // Main Resultant R with hover showing angle
             const traceR = {
                 x: [0, sum_x],
                 y: [0, sum_y],
                 mode: "lines+markers",
                 name: "Resultant R",
                 line: { color: "#a855f7", width: 5 },
-                marker: { size: 7, color: "#a855f7" }
+                marker: { size: 7, color: "#a855f7" },
+                hovertemplate: `θ = ${thetaDeg.toFixed(1)}°<extra></extra>`
             };
 
-            // Parallelogram helper lines (same thickness, MUCH more transparent)
+            // Parallelogram helper lines (lighter shades - mixed with white)
             const traceParaAtoB = {
                 x: [a_x, a_x + b_x],
                 y: [a_y, a_y + b_y],
                 mode: "lines",
                 line: { 
-                    color: "#3b82f6", 
-                    width: 4,  // Now matches main vectors
-                    dash: "dash",
-                    opacity: 0.2  // Reduced from 0.4 to 0.2 (much more transparent)
+                    color: "#8bbef9",  // Lighter blue (blue + white)
+                    width: 4,
+                    dash: "dash"
                 },
                 showlegend: false,
                 hovertemplate: ""
@@ -446,13 +446,36 @@
                 y: [b_y, a_y + b_y],
                 mode: "lines",
                 line: { 
-                    color: "#f97373", 
-                    width: 4,  // Now matches main vectors
-                    dash: "dash",
-                    opacity: 0.2  // Reduced from 0.4 to 0.2 (much more transparent)
+                    color: "#fda4a4",  // Lighter red (red + white)
+                    width: 4,
+                    dash: "dash"
                 },
                 showlegend: false,
                 hovertemplate: ""
+            };
+
+            // NEW: Angle arc from x-axis to resultant (hover shows θ value)
+            const r = Math.min(2.5, magR * 0.15 || 2); // Scale arc radius
+            const numPoints = 50;
+            const arcX = [];
+            const arcY = [];
+            for (let i = 0; i <= numPoints; i++) {
+                const angle = (thetaDeg / 180) * Math.PI * (i / numPoints);
+                arcX.push(r * Math.cos(angle));
+                arcY.push(r * Math.sin(angle));
+            }
+
+            const traceAngle = {
+                x: arcX,
+                y: arcY,
+                mode: "lines",
+                line: { 
+                    color: "#a855f7",
+                    width: 3,
+                    dash: "dot"
+                },
+                showlegend: false,
+                hovertemplate: `Resultant angle: ${thetaDeg.toFixed(1)}°<extra></extra>`
             };
 
             const layout = {
@@ -491,7 +514,7 @@
                 scrollZoom: true
             };
 
-            Plotly.newPlot("graph", [traceA, traceB, traceR, traceParaAtoB, traceParaBtoA], layout, config);
+            Plotly.newPlot("graph", [traceA, traceB, traceR, traceParaAtoB, traceParaBtoA, traceAngle], layout, config);
         }
 
         addVectors();
