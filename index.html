@@ -12,6 +12,7 @@
             box-sizing: border-box;
         }
 
+        /* New layout container */
         .app-container {
             display: flex;
             align-items: flex-start;
@@ -19,11 +20,13 @@
             gap: 20px;
         }
 
+        /* Left panel: inputs (1 part) */
         .left-panel {
             flex: 1;
             max-width: 350px;
         }
 
+        /* Right panel: canvas (2 parts) */
         .right-panel {
             flex: 2;
         }
@@ -33,42 +36,17 @@
         }
 
         .inputs-row {
-            margin-bottom: 16px;
+            margin-bottom: 10px;
         }
 
-        .vector-column {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+        label {
+            margin-right: 5px;
         }
 
-        .vector-header {
-            font-weight: bold;
-        }
-
-        .component-line {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .component-line span {
-            min-width: 24px;
-        }
-
-        /* Smaller input and lighter outline */
         input {
-            padding: 4px 6px;
-            width: 70px;
-            font-size: 14px;
-            border: 1px solid #cccccc;
-            border-radius: 3px;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #a0c4ff;
-            box-shadow: 0 0 2px #a0c4ff;
+            margin: 5px 10px 5px 0;
+            padding: 8px;
+            width: 90px;
         }
 
         button {
@@ -96,6 +74,7 @@
             max-width: 100%;
         }
 
+        /* Optional: stack vertically on very small screens */
         @media (max-width: 768px) {
             .app-container {
                 flex-direction: column;
@@ -105,212 +84,36 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- LEFT: controls (1 part) -->
         <div class="left-panel">
             <h1>Vector Addition Calculator (2D)</h1>
             <p>Enter components for Vector A (x1, y1) and Vector B (x2, y2). Click Add to compute and visualize.</p>
 
-            <!-- Vector A: stacked column -->
             <div class="inputs-row">
-                <div class="vector-column">
-                    <div class="vector-header">Vector A:</div>
-                    <div class="component-line">
-                        <span>x =</span>
-                        <input type="number" id="a_x" value="12.5" step="0.1">
-                    </div>
-                    <div class="component-line">
-                        <span>y =</span>
-                        <input type="number" id="a_y" value="25" step="0.1">
-                    </div>
-                </div>
+                <span>Vector A: </span>
+                <label>x = <input type="number" id="a_x" value="12.5" step="0.1"></label>
+                <label>y = <input type="number" id="a_y" value="25" step="0.1"></label>
             </div>
 
-            <!-- Vector B: stacked column -->
             <div class="inputs-row">
-                <div class="vector-column">
-                    <div class="vector-header">Vector B:</div>
-                    <div class="component-line">
-                        <span>x =</span>
-                        <input type="number" id="b_x" value="6" step="0.1">
-                    </div>
-                    <div class="component-line">
-                        <span>y =</span>
-                        <input type="number" id="b_y" value="40" step="0.1">
-                    </div>
-                </div>
+                <span>Vector B: </span>
+                <label>x = <input type="number" id="b_x" value="6" step="0.1"></label>
+                <label>y = <input type="number" id="b_y" value="40" step="0.1"></label>
             </div>
 
             <button onclick="addVectors()">Add Vectors</button>
             <div id="result"></div>
         </div>
 
+        <!-- RIGHT: canvas (2 parts) -->
         <div class="right-panel">
             <canvas id="canvas" width="600" height="400"></canvas>
         </div>
     </div>
 
+    <!-- keep your existing script here -->
     <script>
-        function addVectors() {
-            const a_x = parseFloat(document.getElementById('a_x').value);
-            const a_y = parseFloat(document.getElementById('a_y').value);
-            const b_x = parseFloat(document.getElementById('b_x').value);
-            const b_y = parseFloat(document.getElementById('b_y').value);
-
-            const sum_x = a_x + b_x;
-            const sum_y = a_y + b_y;
-
-            document.getElementById('result').innerHTML =
-                `Resultant Vector: (${sum_x.toFixed(2)}, ${sum_y.toFixed(2)})`;
-
-            drawVectors(a_x, a_y, b_x, b_y, sum_x, sum_y);
-        }
-
-        function drawVectors(a_x, a_y, b_x, b_y, sum_x, sum_y) {
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            const scale = 15;            // pixels per unit
-            const originX = 100;
-            const originY = 300;
-            const maxX = 550;
-            const minX = 50;
-            const maxY = 350;
-            const minY = 50;
-
-            // --- Axes ---
-            ctx.strokeStyle = '#cccccc';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            // x-axis
-            ctx.moveTo(minX, originY);
-            ctx.lineTo(maxX, originY);
-            // y-axis
-            ctx.moveTo(originX, minY);
-            ctx.lineTo(originX, maxY);
-            ctx.stroke();
-
-            // --- Axis ticks and numbers ---
-            ctx.fillStyle = '#555555';
-            ctx.font = '12px Arial';
-
-            // X-axis ticks
-            for (let x = originX; x <= maxX; x += scale) {
-                const value = (x - originX) / scale;
-                if (value === 0) continue;
-                ctx.beginPath();
-                ctx.moveTo(x, originY - 4);
-                ctx.lineTo(x, originY + 4);
-                ctx.stroke();
-                ctx.fillText(value.toString(), x - 4, originY + 16);
-            }
-            for (let x = originX - scale; x >= minX; x -= scale) {
-                const value = (x - originX) / scale;
-                if (value === 0) continue;
-                ctx.beginPath();
-                ctx.moveTo(x, originY - 4);
-                ctx.lineTo(x, originY + 4);
-                ctx.stroke();
-                ctx.fillText(value.toString(), x - 8, originY + 16);
-            }
-
-            // Y-axis ticks
-            for (let y = originY; y >= minY; y -= scale) {
-                const value = (originY - y) / scale;
-                if (value === 0) continue;
-                ctx.beginPath();
-                ctx.moveTo(originX - 4, y);
-                ctx.lineTo(originX + 4, y);
-                ctx.stroke();
-                ctx.fillText(value.toString(), originX - 24, y + 4);
-            }
-            for (let y = originY + scale; y <= maxY; y += scale) {
-                const value = (originY - y) / scale;
-                if (value === 0) continue;
-                ctx.beginPath();
-                ctx.moveTo(originX - 4, y);
-                ctx.lineTo(originX + 4, y);
-                ctx.stroke();
-                ctx.fillText(value.toString(), originX - 28, y + 4);
-            }
-
-            // Axis labels
-            ctx.fillStyle = '#000000';
-            ctx.font = '16px Arial';
-            ctx.fillText('X', maxX - 10, originY + 20);
-            ctx.fillText('Y', originX + 8, minY + 15);
-
-            // --- Vector A (blue) ---
-            ctx.strokeStyle = 'blue';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(originX, originY);
-            ctx.lineTo(originX + a_x * scale, originY - a_y * scale);
-            ctx.stroke();
-
-            // --- Vector B (red) from origin (to make legend clearer) ---
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(originX, originY);
-            ctx.lineTo(originX + b_x * scale, originY - b_y * scale);
-            ctx.stroke();
-
-            // --- Resultant R (green) from origin ---
-            ctx.strokeStyle = 'green';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(originX, originY);
-            ctx.lineTo(originX + sum_x * scale, originY - sum_y * scale);
-            ctx.stroke();
-
-            // --- Legend box ---
-            const legendX = 360;
-            const legendY = 60;
-            const legendW = 200;
-            const legendH = 70;
-
-            ctx.fillStyle = 'rgba(255,255,255,0.9)';
-            ctx.strokeStyle = '#cccccc';
-            ctx.lineWidth = 1;
-            ctx.fillRect(legendX, legendY, legendW, legendH);
-            ctx.strokeRect(legendX, legendY, legendW, legendH);
-
-            ctx.font = '13px Arial';
-            const lineHeight = 18;
-            let textY = legendY + 18;
-
-            // Vector A legend
-            ctx.strokeStyle = 'blue';
-            ctx.beginPath();
-            ctx.moveTo(legendX + 10, textY - 5);
-            ctx.lineTo(legendX + 40, textY - 5);
-            ctx.stroke();
-            ctx.fillStyle = '#000000';
-            ctx.fillText('Vector A', legendX + 50, textY);
-
-            // Vector B legend
-            textY += lineHeight;
-            ctx.strokeStyle = 'red';
-            ctx.beginPath();
-            ctx.moveTo(legendX + 10, textY - 5);
-            ctx.lineTo(legendX + 40, textY - 5);
-            ctx.stroke();
-            ctx.fillStyle = '#000000';
-            ctx.fillText('Vector B', legendX + 50, textY);
-
-            // Resultant legend
-            textY += lineHeight;
-            ctx.strokeStyle = 'green';
-            ctx.beginPath();
-            ctx.moveTo(legendX + 10, textY - 5);
-            ctx.lineTo(legendX + 40, textY - 5);
-            ctx.stroke();
-            ctx.fillStyle = '#000000';
-            ctx.fillText('Resultant R = A + B', legendX + 50, textY);
-        }
-
-        // Initial draw
-        addVectors();
+        /* your existing addVectors() and drawVectors() functions */
     </script>
 </body>
 </html>
