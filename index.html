@@ -107,7 +107,7 @@
 
         .vector-column {
             display: flex;
-            flex-direction: UPDATED: column;
+            flex-direction: column;
             gap: 6px;
         }
 
@@ -129,10 +129,10 @@
             color: var(--text-muted);
         }
 
-        /* UPDATED: All inputs same length (100px), aligned perfectly */
+        /* FIXED: Longer inputs (120px) but 2-column layout preserved */
         input {
             padding: 6px 8px;
-            width: 100px;  /* Fixed width for all inputs */
+            width: 120px;  /* Longer inputs */
             font-size: 13px;
             color: var(--text-main);
             background: #020617;
@@ -147,10 +147,10 @@
             box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
         }
 
-        /* UPDATED: Button text perfectly centered */
+        /* PERFECTLY centered button text */
         button {
             margin-top: 6px;
-            padding: 9px 20px;  /* Increased horizontal padding */
+            padding: 9px 20px;
             font-size: 13px;
             font-weight: 500;
             color: #e5e7eb;
@@ -158,11 +158,10 @@
             border: none;
             border-radius: 14px;
             cursor: pointer;
-            display: flex;  /* Changed to flex for perfect centering */
+            display: inline-flex;  /* Back to inline-flex */
             align-items: center;
-            justify-content: center;  /* Horizontal centering */
+            justify-content: center;  /* Perfect centering */
             gap: 6px;
-            width: 100%;  /* Full width to align with inputs */
             box-shadow: 0 2.5px 6px rgba(37, 99, 235, 0.11);
             transition: all 0.12s ease;
         }
